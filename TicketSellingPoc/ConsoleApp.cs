@@ -7,12 +7,12 @@ namespace TicketSellingPoc
     {
         private readonly IEventsRepository _eventsRepository;
         private readonly ISendEmailCampaingn _sendEmailCampaingn;
-        private readonly List<Event> _eventsCache; 
+        private readonly List<Event> _eventsCache;
         public ConsoleApp(IEventsRepository eventsRepository, ISendEmailCampaingn sendEmailCampaingn)
         {
             _eventsRepository = eventsRepository;
             _sendEmailCampaingn = sendEmailCampaingn;
-            _eventsCache = _eventsRepository.GetAllEvents(); 
+            _eventsCache = _eventsRepository.GetAllEvents();
         }
 
         public void Run()
@@ -41,37 +41,36 @@ namespace TicketSellingPoc
                     _sendEmailCampaingn.AddToEmail(customer, e);
                 }
 
-                return ;
+                return;
             }
 
 
             var closedCitiesFromCity = _eventsRepository.GetClosedCitiesFromCity(cityCustomer);
 
 
-            while (events.Count() <5)
+
+            foreach (var c in closedCitiesFromCity)
             {
-                foreach (var c in closedCitiesFromCity)
-                {
 
-                    if(events.Count()>=5) continue;
-                    
-                    var e = _eventsCache
-                        .FirstOrDefault(  x => x.City.ToLower() == c.Key.ToLower());
+                if (events.Count() >= 5) continue;
+
+                var e = _eventsCache
+                    .FirstOrDefault(x => x.City.ToLower() == c.Key.ToLower());
 
 
-                    if (e == null || events.Contains(e)) continue; 
+                if (e == null || events.Contains(e)) continue;
 
 
-                    events.Add(e);
-                }
+                events.Add(e);
             }
+
 
             foreach (var e in events)
             {
                 _sendEmailCampaingn.AddToEmail(customer, e);
             }
 
-             
+
         }
     }
 }
