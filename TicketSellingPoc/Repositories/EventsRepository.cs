@@ -61,7 +61,11 @@ namespace TicketSellingPoc.Repositories
             {
                 var distance = GetDistance(cityFrom, c);
 
-                result.Add(c, distance);
+                if (!result.ContainsKey(c))
+                {
+                    result.Add(c, distance);
+
+                }
             }
 
             var sortedResult  = result.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
