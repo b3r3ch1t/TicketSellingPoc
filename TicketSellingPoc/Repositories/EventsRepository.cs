@@ -52,25 +52,16 @@ namespace TicketSellingPoc.Repositories
 
         public Dictionary<string, double> GetClosedCitiesFromCity(string cityFrom)
         {
-            var result = new Dictionary<string, double>();
-            
+           
+            var results = _events.GroupBy(n => new { n.City})
+                .Select(g => new {
+                    Key = g.Key.City,
+                    Value = GetDistance(cityFrom, g.Key.City   )})
+                .OrderBy(o=> o.Value)
+                .ToDictionary(x => x.Key, x => x.Value);
 
-            var cities = GetAllCitiesFromEvents();
 
-            foreach (var c in cities)
-            {
-                var distance = GetDistance(cityFrom, c);
-
-                if (!result.ContainsKey(c))
-                {
-                    result.Add(c, distance);
-
-                }
-            }
-
-            var sortedResult  = result.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-
-            return sortedResult;
+            return results;
         }
 
         public double GetDistance(string fromCity, string toCity)
