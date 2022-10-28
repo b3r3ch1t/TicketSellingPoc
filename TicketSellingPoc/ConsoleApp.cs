@@ -44,6 +44,8 @@ namespace TicketSellingPoc
                 return;
             }
 
+            var countEvents = eventsSameCity.Count();
+
 
             var closedCitiesFromCity = _eventsRepository.GetClosedCitiesFromCity(cityCustomer);
 
@@ -52,7 +54,7 @@ namespace TicketSellingPoc
             foreach (var c in closedCitiesFromCity)
             {
 
-                if (events.Count() >= 5) continue;
+                if (countEvents  >= 5) return ;
 
                 var e = _eventsCache
                     .FirstOrDefault(x => x.City.ToLower() == c.Key.ToLower());
@@ -61,15 +63,14 @@ namespace TicketSellingPoc
                 if (e == null || events.Contains(e)) continue;
 
 
-                events.Add(e);
-            }
-
-
-            foreach (var e in events)
-            {
                 _sendEmailCampaingn.AddToEmail(customer, e);
+
+                countEvents += 1; 
+
             }
 
+
+            
 
         }
     }
